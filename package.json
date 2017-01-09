@@ -15,19 +15,25 @@
     "css-mqpacker": "^5.0.1",
     "cssnano": "^3.10.0",
     "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-jshint": "^2.0.4",
     "gulp-postcss": "^6.2.0",
     "gulp-shell": "^0.5.2",
     "gulp-size": "^2.1.0",
     "gulp-sourcemaps": "^1.9.1",
+    "gulp-uglify": "^2.0.0",
     "gulp-uncss": "^1.0.6",
+    "gulp-util": "^3.0.8",
     "gulp-watch": "^4.3.11",
+    "jshint": "^2.9.4",
     "postcss-calc": "^5.3.1",
     "postcss-color-function": "^2.0.1",
     "postcss-custom-media": "^5.0.1",
     "postcss-custom-properties": "^5.0.1",
     "postcss-discard-comments": "^2.0.4",
     "postcss-import": "^9.0.0",
-    "postcss-nested": "^1.0.0"
+    "postcss-nested": "^1.0.0",
+    "pump": "^1.0.2"
   },
   "dependencies": {
     "tachyons": "^4.6.1"

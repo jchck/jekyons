@@ -4,11 +4,15 @@ var reload          = browserSync.reload;
 var mqpacker        = require('css-mqpacker');
 var cssnano         = require('cssnano');
 var gulp            = require('gulp');
+var concat          = require('gulp-concat');
+var jshint          = require('gulp-jshint');
 var postcss         = require('gulp-postcss');
 var shell           = require('gulp-shell');
 var size            = require('gulp-size');
 var sourcemaps      = require('gulp-sourcemaps');
+var uglify          = require('gulp-uglify');
 var uncss           = require('gulp-uncss');
+var util            = require('gulp-util');
 var watch           = require('gulp-watch');
 var calc            = require('postcss-calc');
 var color           = require('postcss-color-function');
@@ -17,13 +21,19 @@ var properties      = require('postcss-custom-properties');
 var comments        = require('postcss-discard-comments');
 var atImport        = require('postcss-import');
 var nested          = require('postcss-nested');
+var pump            = require('pump');
 
 var input			= {
-	'css': './css/jekyons.css'
+	'css': './css/jekyons.css',
+	'js' : [
+		'./js/*.js',
+		'./js/jekyons.js'
+	]
 }
 
 var output			= {
-	'css': './_site/css'
+	'css': './_site/css',
+	'js': './_site/js'
 }
 
 // Task for processing styles
@@ -77,6 +87,47 @@ gulp.task('uncss', function() {
 		.pipe(browserSync.stream())
 });
 
+// Task for processing javascript
+gulp.task('js', function(cb){
+
+	pump([
+		gulp.src(input.js),
+
+		sourcemaps.init(),
+
+		concat('jekyons.js'),
+
+		util.env.type === 'min' ? uglify() : util.noop(),
+
+		sourcemaps.write(),
+
+		gulp.dest(output.js)
+
+	], cb );
+});
+
+// Task for linting javascript
+gulp.task('jshint', ['js'], function(){
+
+	return gulp.src(input.js)
+
+		.pipe(browserSync.stream())
+
+		.pipe(jshint.extract('auto'))
+
+		.pipe(jshint())
+
+		.pipe(jshint.reporter('jshint-stylish'))
+
+		.pipe(jshint.reporter('fail'))
+});
+
+// Task for javascript plumping
+gulp.task('js-plumbing', ['jshint'], function(done){
+	browserReload;
+	done();
+});
+
 
 // Task for building blog when something changed:
 gulp.task('build', shell.task(['bundle exec jekyll build']));
@@ -98,8 +149,9 @@ gulp.task('bs-reload', function(){
 });
 
 // Default gulp task
-gulp.task('default', ['build', 'css', 'bs-reload', 'serve'], function() {
+gulp.task('default', ['build', 'css', 'js-plumbing', 'bs-reload', 'serve'], function() {
 	gulp.watch('css/*', ['css']);
+	gulp.watch('js/*', ['jshint']);
 	gulp.watch(['*.html', './**/*.html'], ['bs-reload']);
 });
 
