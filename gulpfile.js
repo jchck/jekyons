@@ -4,7 +4,9 @@ var reload          = browserSync.reload;
 var mqpacker        = require('css-mqpacker');
 var cssnano         = require('cssnano');
 var gulp            = require('gulp');
+var cache           = require('gulp-cache');
 var concat          = require('gulp-concat');
+var img             = require('gulp-imagemin');
 var jshint          = require('gulp-jshint');
 var postcss         = require('gulp-postcss');
 var shell           = require('gulp-shell');
@@ -28,12 +30,14 @@ var input			= {
 	'js' : [
 		'./js/*.js',
 		'./js/jekyons.js'
-	]
+	],
+	'img' : './images/**.*'
 }
 
 var output			= {
-	'css': './_site/css',
-	'js': './_site/js'
+	'css' : './_site/css',
+	'js'  : './_site/js',
+	'img' : './_site/images'
 }
 
 // Task for processing styles
@@ -128,6 +132,19 @@ gulp.task('js-plumbing', ['jshint'], function(done){
 	done();
 });
 
+// Task for compressing images
+gulp.task('img', function() {
+
+	return gulp.src(input.img)
+
+		.pipe(cache(img({
+			verbose: true,
+			interlaced: true
+		})))
+
+		.pipe(gulp.dest(output.img))
+});
+
 
 // Task for building blog when something changed:
 gulp.task('build', shell.task(['bundle exec jekyll build']));
@@ -152,6 +169,7 @@ gulp.task('bs-reload', function(){
 gulp.task('default', ['build', 'css', 'js-plumbing', 'bs-reload', 'serve'], function() {
 	gulp.watch('css/*', ['css']);
 	gulp.watch('js/*', ['jshint']);
+	gulp.watch('images/*', ['img']);
 	gulp.watch(['*.html', './**/*.html'], ['bs-reload']);
 });
 
