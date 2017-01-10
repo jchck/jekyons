@@ -6,7 +6,7 @@ var cssnano         = require('cssnano');
 var gulp            = require('gulp');
 var cache           = require('gulp-cache');
 var concat          = require('gulp-concat');
-var img             = require('gulp-imagemin');
+var imagemin        = require('gulp-imagemin');
 var jshint          = require('gulp-jshint');
 var postcss         = require('gulp-postcss');
 var shell           = require('gulp-shell');
@@ -137,7 +137,7 @@ gulp.task('img', function() {
 
 	return gulp.src(input.img)
 
-		.pipe(cache(img({
+		.pipe(cache(imagemin({
 			verbose: true,
 			interlaced: true
 		})))
@@ -166,10 +166,10 @@ gulp.task('bs-reload', function(){
 });
 
 // Default gulp task
-gulp.task('default', ['build', 'css', 'js-plumbing', 'bs-reload', 'serve'], function() {
+gulp.task('default', ['build', 'css', 'js-plumbing', 'img', 'bs-reload', 'serve'], function() {
 	gulp.watch('css/*', ['css']);
 	gulp.watch('js/*', ['jshint']);
-	gulp.watch('images/*', ['img']);
+	gulp.watch('images/**.*', ['img']);
 	gulp.watch(['*.html', './**/*.html'], ['bs-reload']);
 });
 
