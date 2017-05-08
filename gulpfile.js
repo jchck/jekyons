@@ -4,10 +4,14 @@ var reload          = browserSync.reload;
 var mqpacker        = require('css-mqpacker');
 var cssnano         = require('cssnano');
 var gulp            = require('gulp');
+var concat          = require('gulp-concat');
+var jshint          = require('gulp-jshint');
 var postcss         = require('gulp-postcss');
 var shell           = require('gulp-shell');
 var size            = require('gulp-size');
 var sourcemaps      = require('gulp-sourcemaps');
+var uglify 			= require('gulp-uglify');
+var util 			= require('gulp-util');
 var uncss           = require('gulp-uncss');
 var watch           = require('gulp-watch');
 var calc            = require('postcss-calc');
@@ -17,6 +21,7 @@ var properties      = require('postcss-custom-properties');
 var comments        = require('postcss-discard-comments');
 var atImport        = require('postcss-import');
 var nested          = require('postcss-nested');
+var pump            = require('pump');
 
 var input			= {
 	'css': './css/jekyons.css'
@@ -76,6 +81,38 @@ gulp.task('uncss', function() {
 
 		.pipe(browserSync.stream())
 });
+
+/*
+	$ gulp js-concat
+	$ gulp js-concat --type min
+*/
+gulp.task('js-concat', function(cb) {
+	pump([
+		gulp.src(input.js),
+		sourcemaps.init(),
+		concat('scripts.js'),
+			util.env.type === 'min' ? uglify() : util.noop(),
+		sourcemaps.write(),
+		gulp.dest(output.js)
+	], cb);
+});
+
+/*
+	$ gulp js-hint
+*/
+gulp.task('js-hint', ['js-concat'], function() {
+	return gulp.src(input.js)
+		.pipe(jshint.extract('auto'))
+		.pipe(jshint())
+		.pipe(jshint.reporter('default'))
+		.pipe(jshint.reporter('fail'))
+});
+
+/*
+	$ gulp js
+*/
+gulp.task('js', ['js-hint', 'js-concat']);
+
 
 
 // Task for building blog when something changed:
