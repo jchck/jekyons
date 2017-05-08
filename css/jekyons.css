@@ -8,11 +8,4 @@
 @import './_variables';
 @import './_media-queries';
 
-/* Debugging */
-@import '../node_modules/tachyons-custom/src/_debug-children';
-@import '../node_modules/tachyons-custom/src/_debug-grid';
-
-/* Uncomment out the line below to help debug layout issues */
-/* @import '../node_modules/tachyons-custom/src/_debug'; */
-
 @import './_customs';
