@@ -35,5 +35,7 @@
     "postcss-nested": "^1.0.0",
     "pump": "^1.0.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "tachyons-custom": "^4.6.0"
+  }
 }
