@@ -24,11 +24,16 @@ var nested          = require('postcss-nested');
 var pump            = require('pump');
 
 var input			= {
-	'css': './css/jekyons.css'
+	'css': './css/jekyons.css',
+	'js' : [
+		'./js/*.js',
+		'./js/scripts.js'
+	]
 }
 
 var output			= {
-	'css': './_site/css'
+	'css': './_site/css',
+	'js' : './_site/js'
 }
 
 // Task for processing styles
