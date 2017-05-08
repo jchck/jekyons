@@ -26,6 +26,12 @@ var pump            = require('pump');
 var input			= {
 	'css': './css/jekyons.css',
 	'js' : [
+		/* 
+			this is the order which js files are concatinated
+			to include 3rd party js (installed via npm or bower): 
+			'./node_modules/module-name/js/scripts.js'
+			'./bower_components/module-name/js/scripts.js'
+		*/
 		'./js/*.js',
 		'./js/scripts.js'
 	]
@@ -142,6 +148,7 @@ gulp.task('bs-reload', function(){
 // Default gulp task
 gulp.task('default', ['build', 'css', 'bs-reload', 'serve'], function() {
 	gulp.watch('css/*', ['css']);
+	gulp.watch('js/*', ['js']);
 	gulp.watch(['*.html', './**/*.html'], ['bs-reload']);
 });
 
